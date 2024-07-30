@@ -1,0 +1,24 @@
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Cover Letter Viewer
+{% endblock %}
+
+{% block main %}
+    <div>
+        <h4>Cover Letter:</h4>
+        <p>{{ coverletter }}</p>
+    </div>
+    <button class="btn btn-primary" type="submit">Edit</button>
+    <button class="btn" id="copyButton">Copy to Clipboard</button>
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            var coverletter = document.getElementById('coverletter');
+            coverletter.select();
+            coverletter.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            alert('Cover letter copied to clipboard');
+        });
+    </script>
+{% endblock %}

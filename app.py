@@ -3,8 +3,30 @@ import cs50
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
+import openai
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# import pathlib
+# import textwrap
+# import google.generativeai as genai
+
+# from IPython.display import display, Markdown
+
+
+# def to_markdown(text):
+#     text = text.replace('•', '  *')
+#     return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+
+load_dotenv()
+
+# GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
+# genai.configure(api_key=GOOGLE_API_KEY)
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
 app = Flask(__name__)
 
@@ -148,3 +170,59 @@ def edit_info():
         skills = info[0]["skills"]
         projects = info[0]["projects"]
         return render_template("edit_info.html", intro=intro, skills=skills, projects=projects)
+
+@app.route("/create_cover", methods=["GET", "POST"])
+@login_required
+def create_cover():
+    """get job information"""
+    id = session.get("user_id")
+    if request.method == "POST":
+        first_name = db.execute("SELECT firstname FROM users WHERE id = ?", id)
+        last_name = db.execute("SELECT lastname FROM users WHERE id = ?", id)
+
+        info = db.execute("SELECT * FROM information WHERE user_id = ?", id)
+        intro = info[0]["intro"]
+        skills = info[0]["skills"]
+        projects = info[0]["projects"]
+
+        job = request.form.get("job")
+        qualifications = request.form.get("qualifications")
+        other = request.form.get("other")
+        info = db.execute("SELECT * FROM information WHERE user_id = ?", id)
+
+        # response = genai.GenerativeModel.generate_content("Remember this information about me to help me write a cover letter. intro: " + intro + " skills: " + skills + " projects: " + projects + " remember this information about the job to help me write a cover letter. job: " + job + " qualifications: " + qualifications + " other: " + other + " Write a one page cover letter only using relevant information about me and the job.")
+        # coverletter = to_markdown(response.text)
+
+        completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Remember this information about me to help me write a cover letter. intro: " + intro + " skills: " + skills + " projects: " + projects},
+            {"role": "system", "content": "remember this information about the job to help me write a cover letter. job: " + job + " qualifications: " + qualifications + " other: " + other},
+            {"role": "user", "content": "Write a one page cover letter only using relevant information about me and the job."},
+        ]
+        )
+        coverletter = completion.choices[0].message
+        return render_template("letter_view.html", coverletter=coverletter)
+    else:
+        return render_template("create_cover.html")
+
+@app.route("/letter_editor", methods=["GET", "POST"])
+@login_required
+def letter_editor():
+    """get job information"""
+    id = session.get("user_id")
+    if request.method == "POST":
+        coverletter = request.form.get("coverletter")
+        return render_template("letter_view.html", coverletter=coverletter)
+    else:
+        return render_template("letter_editor.html")
+    
+@app.route("/letter_view", methods=["GET", "POST"])
+@login_required
+def letter_view():
+    """get job information"""
+    id = session.get("user_id")
+    if request.method == "POST":
+        return render_template("letter_editor.html")
+    else:
+        return render_template("letter_view.html")

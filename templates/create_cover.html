@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Cover Letter Creator
+{% endblock %}
+
+{% block main %}
+<form action="/create_cover" method="post">
+    <div class="mb-3">
+        <h4>Job Description</h4>
+        <textarea class="form-control mx-auto" name="job" placeholder="Job Description" rows="8" style="width: 80%;"></textarea>
+    </div>
+    <div class="mb-3">
+        <h4>Qualifications/Wanting:</h4>
+        <textarea class="form-control mx-auto" name="qualifications" placeholder="Qualifications" rows="6" style="width: 80%;"></textarea>
+    </div>
+    <div class="mb-3">
+        <h4>Other:</h4>
+        <textarea class="form-control mx-auto" name="other" placeholder="Other" rows="4" style="width: 80%;"></textarea>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}

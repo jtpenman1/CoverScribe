@@ -5,16 +5,31 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/edit_info" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="intro" placeholder="Intro/Background" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="skills" placeholder="Skills" type="text">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="projects" placeholder="Projects" type="text">
-        </div>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </form>
+<form action="/edit_info" method="post">
+    <div class="mb-3">
+        <h4>Introduction/Background:</h4>
+        <textarea class="form-control mx-auto" name="intro" rows="8" style="width: 80%;">{% if intro %}{{ intro }}{% else %}placeholder="Intro/Background"{% endif %}</textarea>
+    </div>
+    <div class="mb-3">
+        <h4>Skills:</h4>
+        <textarea class="form-control mx-auto" name="skills" rows="3" style="width: 80%;">
+            {% if skills %}
+                {{ skills }}
+            {% else %}
+                placeholder="Skills"
+            {% endif %}
+        </textarea>
+    </div>
+    <div class="mb-3">
+        <h4>Jobs/Projects:</h4>
+        <textarea class="form-control mx-auto" name="projects" rows="10" style="width: 80%;">
+            {% if projects %}
+                {{ projects }}
+            {% else %}
+                placeholder="Projects"
+            {% endif %}
+        </textarea>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
 {% endblock %}

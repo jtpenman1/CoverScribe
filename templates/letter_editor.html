@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Letter Editor
+{% endblock %}
+
+{% block main %}
+<form action="/letter_editor" method="post">
+    <div class="mb-3">
+        <h4>Draft Letter:</h4>
+        <textarea class="form-control mx-auto" name="coverletter" placeholder="" rows="25" style="width: 80%;"></textarea>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}
