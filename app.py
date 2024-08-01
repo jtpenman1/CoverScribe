@@ -9,21 +9,7 @@ from helpers import apology, login_required
 from dotenv import load_dotenv
 from openai import OpenAI
 
-# import pathlib
-# import textwrap
-# import google.generativeai as genai
-
-# from IPython.display import display, Markdown
-
-
-# def to_markdown(text):
-#     text = text.replace('•', '  *')
-#     return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
-
 load_dotenv()
-
-# GOOGLE_API_KEY=os.getenv('GOOGLE_API_KEY')
-# genai.configure(api_key=GOOGLE_API_KEY)
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI()
@@ -177,8 +163,9 @@ def create_cover():
     """get job information"""
     id = session.get("user_id")
     if request.method == "POST":
-        first_name = db.execute("SELECT firstname FROM users WHERE id = ?", id)
-        last_name = db.execute("SELECT lastname FROM users WHERE id = ?", id)
+        name = db.execute("SELECT * FROM users WHERE id = ?", id)
+        first_name = name[0]["firstname"]
+        last_name = name[0]["lastname"]
 
         info = db.execute("SELECT * FROM information WHERE user_id = ?", id)
         intro = info[0]["intro"]
@@ -190,18 +177,16 @@ def create_cover():
         other = request.form.get("other")
         info = db.execute("SELECT * FROM information WHERE user_id = ?", id)
 
-        # response = genai.GenerativeModel.generate_content("Remember this information about me to help me write a cover letter. intro: " + intro + " skills: " + skills + " projects: " + projects + " remember this information about the job to help me write a cover letter. job: " + job + " qualifications: " + qualifications + " other: " + other + " Write a one page cover letter only using relevant information about me and the job.")
-        # coverletter = to_markdown(response.text)
-
         completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "Remember this information about me to help me write a cover letter. intro: " + intro + " skills: " + skills + " projects: " + projects},
+            {"role": "system", "content": "Remember this information about me to help me write a cover letter. First Name:" + first_name + "last name:" + last_name + "intro: " + intro + " skills: " + skills + " projects: " + projects},
             {"role": "system", "content": "remember this information about the job to help me write a cover letter. job: " + job + " qualifications: " + qualifications + " other: " + other},
-            {"role": "user", "content": "Write a one page cover letter only using relevant information about me and the job."},
+            {"role": "user", "content": "Write a one page cover letter only using relevant information about me and the job. Do not use any fill in the blank templates. Start with Dear Hiring Manager or company name"},
         ]
         )
-        coverletter = completion.choices[0].message
+        coverletter = completion.choices[0].message.content
+
         return render_template("letter_view.html", coverletter=coverletter)
     else:
         return render_template("create_cover.html")
@@ -220,7 +205,7 @@ def letter_editor():
 @app.route("/letter_view", methods=["GET", "POST"])
 @login_required
 def letter_view():
-    """get job information"""
+    """view cover letter"""
     id = session.get("user_id")
     if request.method == "POST":
         return render_template("letter_editor.html")

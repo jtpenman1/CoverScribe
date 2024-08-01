@@ -7,4 +7,14 @@
 --     projects TEXT,
 --     FOREIGN KEY (user_id) REFERENCES users (id)
 -- );
-SELECT * FROM information;
+
+-- if I want to do this
+-- CREATE TABLE letters (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+--     user_id INTEGER NOT NULL,
+--     letter TEXT NOT NULL,
+--     date TEXT NOT NULL,
+--     company_name TEXT NOT NULL,
+--     job_title TEXT NOT NULL,
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+-- );
