@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    <h4>History:</h4>
+    {% if not info %}
+        <p>No history found</p>
+    {% else %}
+        {% for info in info %}
+        <form action="/history" method="post">
+            <button class="layout-button">
+                <div class="layout-content">
+                    <p class="history"> <strong>{{ info.company_name }}</strong> <span class="date">{{ info.date }}</span> </p>
+                    <p style="text-align: center;">{{ info.job_title }}</p>
+                </div>
+            </button>
+        </form>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

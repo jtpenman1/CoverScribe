@@ -51,6 +51,10 @@ p {
     padding: 0 10px;
 }
 
+.history p {
+    text-align: center;
+}
+
 .layout {
     margin: 20px auto;
     padding: 20px;
@@ -60,6 +64,37 @@ p {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.history {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.date {
+    margin-left: auto;
+}
+
+.layout-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left; /* Ensure text aligns properly inside */
+}
+
+.layout-content {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.layout-button:hover .layout-content {
+    background-color: #f1f1f1; /* Optional: Change background on hover */
+}
 
 /* Colors for brand */
 /* nav .navbar-brand .blue
