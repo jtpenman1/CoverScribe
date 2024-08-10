@@ -1,3 +1,4 @@
+import datetime
 import os
 import cs50 
 from cs50 import SQL
@@ -172,6 +173,10 @@ def create_cover():
         skills = info[0]["skills"]
         projects = info[0]["projects"]
 
+        company = request.form.get("company")
+        title = request.form.get("title")
+        date = datetime.datetime.now().strftime("%B %d %Y")
+
         job = request.form.get("job")
         qualifications = request.form.get("qualifications")
         other = request.form.get("other")
@@ -187,6 +192,11 @@ def create_cover():
         )
         coverletter = completion.choices[0].message.content
 
+        db.execute("INSERT INTO letters (user_id, letter, date, company_name, job_title) VALUES(?, ?, ?, ?, ?)",
+                    id, coverletter, date, company, title)
+        
+        db.execute("UPDATE users SET letter_count = letter_count + 1 WHERE id = ?", id)
+
         return render_template("letter_view.html", coverletter=coverletter)
     else:
         return render_template("create_cover.html")
@@ -195,19 +205,40 @@ def create_cover():
 @login_required
 def letter_editor():
     """get job information"""
-    id = session.get("user_id")
+    user_id = session.get("user_id")
     if request.method == "POST":
+        info = db.execute("SELECT * FROM users WHERE user_id = ?", user_id)
+        id = info[0]["id"]
+
         coverletter = request.form.get("coverletter")
+        db.execute("UPDATE letters SET letter = ? WHERE user_id = ? AND id = ?", coverletter, user_id, id)
         return render_template("letter_view.html", coverletter=coverletter)
     else:
         return render_template("letter_editor.html")
     
+# TypeError: The view function for 'letter_view' did not return a valid response. 
+# The function either returned None or ended without a return statement.
 @app.route("/letter_view", methods=["GET", "POST"])
 @login_required
 def letter_view():
     """view cover letter"""
     id = session.get("user_id")
     if request.method == "POST":
-        return render_template("letter_editor.html")
+        # fix this
+        if request.form.get("edit"):
+            return render_template("letter_editor.html")
+        if request.form.get("done"):
+            return render_template("history.html")
     else:
         return render_template("letter_view.html")
+    
+@app.route("/history", methods=["GET", "POST"])
+@login_required
+def history():
+    """view cover letter"""
+    id = session.get("user_id")
+    if request.method == "POST":
+        return render_template("letter_view.html")
+    else:
+        info = db.execute("SELECT * FROM letters WHERE user_id = ?", id)            
+        return render_template("history.html", info=info)

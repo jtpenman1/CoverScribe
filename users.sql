@@ -1,4 +1,6 @@
 -- CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT NOT NULL, hash TEXT NOT NULL, firstname TEXT NOT NULL, lastname TEXT NOT NULL);
+-- ALTER TABLE users ADD COLUMN letter_count INTEGER DEFAULT 0;
+
 -- CREATE TABLE information (
 --     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 --     user_id INTEGER NOT NULL,
@@ -8,7 +10,6 @@
 --     FOREIGN KEY (user_id) REFERENCES users (id)
 -- );
 
--- if I want to do this
 -- CREATE TABLE letters (
 --     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 --     user_id INTEGER NOT NULL,

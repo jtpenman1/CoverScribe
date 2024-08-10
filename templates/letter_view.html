@@ -11,8 +11,9 @@
         <h4>Cover Letter:</h4>
         <p id="coverletter">{{ coverletter }}</p>
     </div>
-    <button class="btn btn-primary" type="submit">Edit</button>
+    <button class="btn btn-primary" type="edit">Edit</button>
     <button class="btn" type="button" id="copyButton">Copy to Clipboard</button>
+    <button class="btn btn-done" type="done">Done</button>
     <script>
         document.getElementById('copyButton').addEventListener('click', function(event) {
             event.preventDefault();
