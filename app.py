@@ -209,22 +209,18 @@ def letter_editor():
     if request.method == "POST":
         info = db.execute("SELECT * FROM users WHERE user_id = ?", user_id)
         id = info[0]["id"]
-
         coverletter = request.form.get("coverletter")
         db.execute("UPDATE letters SET letter = ? WHERE user_id = ? AND id = ?", coverletter, user_id, id)
         return render_template("letter_view.html", coverletter=coverletter)
     else:
         return render_template("letter_editor.html")
     
-# TypeError: The view function for 'letter_view' did not return a valid response. 
-# The function either returned None or ended without a return statement.
 @app.route("/letter_view", methods=["GET", "POST"])
 @login_required
 def letter_view():
     """view cover letter"""
     id = session.get("user_id")
     if request.method == "POST":
-        # fix this
         if request.form.get("edit"):
             return render_template("letter_editor.html")
         if request.form.get("done"):
@@ -238,7 +234,9 @@ def history():
     """view cover letter"""
     id = session.get("user_id")
     if request.method == "POST":
-        return render_template("letter_view.html")
+        letter_id = request.form.get("letter_id")
+        info = db.execute("SELECT * FROM letters WHERE user_id = ? AND id = ?", id, letter_id)
+        return render_template("letter_view.html", coverletter=info[0]["letter"])
     else:
         info = db.execute("SELECT * FROM letters WHERE user_id = ?", id)            
         return render_template("history.html", info=info)

@@ -11,7 +11,7 @@
     {% else %}
         {% for info in info %}
         <form action="/history" method="post">
-            <button class="layout-button">
+            <button class="layout-button" type="submit" name="letter_id" value="{{ info.id }}">
                 <div class="layout-content">
                     <p class="history"> <strong>{{ info.company_name }}</strong> <span class="date">{{ info.date }}</span> </p>
                     <p style="text-align: center;">{{ info.job_title }}</p>
