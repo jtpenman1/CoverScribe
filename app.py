@@ -207,7 +207,7 @@ def letter_editor():
     """get job information"""
     user_id = session.get("user_id")
     if request.method == "POST":
-        info = db.execute("SELECT * FROM users WHERE user_id = ?", user_id)
+        info = db.execute("SELECT * FROM users WHERE id = ?", user_id)
         id = info[0]["id"]
         coverletter = request.form.get("coverletter")
         db.execute("UPDATE letters SET letter = ? WHERE user_id = ? AND id = ?", coverletter, user_id, id)
@@ -221,9 +221,9 @@ def letter_view():
     """view cover letter"""
     id = session.get("user_id")
     if request.method == "POST":
-        if request.form.get("edit"):
+        if request.form.get("action") == "edit":
             return render_template("letter_editor.html")
-        if request.form.get("done"):
+        elif request.form.get("action") == "done":
             return render_template("history.html")
     else:
         return render_template("letter_view.html")
@@ -231,7 +231,7 @@ def letter_view():
 @app.route("/history", methods=["GET", "POST"])
 @login_required
 def history():
-    """view cover letter"""
+    """History"""
     id = session.get("user_id")
     if request.method == "POST":
         letter_id = request.form.get("letter_id")
